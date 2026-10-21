@@ -1,0 +1,31 @@
+{
+  "name": "Álex OS",
+  "domain": "example.com",
+  "description": "Este portfolio: un sistema operativo de escritorio dentro del navegador.",
+  "summary": "Este portfolio: un sistema operativo de escritorio dentro del navegador.",
+  "details": [
+    "Un escritorio con ventanas, dock, Terminal y apps: cada parte del trabajo de su autor es algo que se abre.",
+    "Está hecho con Astro, Svelte y Cloudflare, y se publica a partir de una plantilla abierta. En «Cómo está hecho» se explica por dentro."
+  ],
+  "stack": [
+    "Astro",
+    "Svelte",
+    "TypeScript",
+    "Cloudflare"
+  ],
+  "screenshots": [
+    {
+      "src": "/projects/este-portfolio/escritorio.webp",
+      "alt": "El escritorio: iconos a la derecha, el dock abajo y la barra de menú arriba"
+    }
+  ],
+  "colors": {
+    "from": "#8a6dff",
+    "to": "#3d2bd1"
+  },
+  "url": "https://example.com",
+  "embeddable": false,
+  "howto": true,
+  "order": 4,
+  "example": true
+}

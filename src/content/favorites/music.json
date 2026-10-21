@@ -1,0 +1,41 @@
+{
+  "kind": "music",
+  "title": "Música",
+  "items": [
+    {
+      "id": "monkeys-spinning-monkeys",
+      "title": "Monkeys Spinning Monkeys",
+      "artist": "Kevin MacLeod",
+      "cover": "/favoritos/musica/monkeys-spinning-monkeys.jpg",
+      "video": "LrM_Y39Gmhk"
+    },
+    {
+      "id": "carefree",
+      "title": "Carefree",
+      "artist": "Kevin MacLeod",
+      "cover": "/favoritos/musica/carefree.jpg",
+      "video": "sMcWOaJFuw0"
+    },
+    {
+      "id": "fluffing-a-duck",
+      "title": "Fluffing a Duck",
+      "artist": "Kevin MacLeod",
+      "cover": "/favoritos/musica/fluffing-a-duck.jpg",
+      "video": "XhCARou6mRI"
+    },
+    {
+      "id": "wallpaper",
+      "title": "Wallpaper",
+      "artist": "Kevin MacLeod",
+      "cover": "/favoritos/musica/wallpaper.jpg",
+      "video": "wNjJiZk7H28"
+    },
+    {
+      "id": "local-forecast-elevator",
+      "title": "Local Forecast - Elevator",
+      "artist": "Kevin MacLeod",
+      "cover": "/favoritos/musica/local-forecast-elevator.jpg",
+      "video": "5IyL1l34PIs"
+    }
+  ]
+}

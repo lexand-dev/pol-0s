@@ -1,0 +1,71 @@
+---
+import { PERSONA } from '../content/persona';
+import '../styles/global.css';
+import { PREFS_BOOT_SCRIPT } from '../lib/prefs';
+import { absoluteUrl, jsonLdScript, personJsonLd } from '../lib/seo';
+import { PROFILE_LINKS } from '../content/links';
+
+interface Props {
+  title: string;
+  description: string;
+  /** `article` para una nota; `website` para el resto. */
+  type?: 'website' | 'article';
+  /** Datos estructurados propios de la página, además de los de la persona. */
+  jsonLd?: unknown;
+  /** Páginas que no deben aparecer en buscadores (por ejemplo, la de confirmar una reseña). */
+  noindex?: boolean;
+}
+
+const { title, description, type = 'website', jsonLd, noindex = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+
+// Imagen para compartir (1200 × 630, scripts/generar-imagenes.mjs) y datos estructurados (S-06).
+// Solo datos públicos: nunca el correo de contacto.
+const shareImage = absoluteUrl(Astro.site!, '/og.jpg');
+const person = personJsonLd({
+  site: Astro.site!,
+  name: PERSONA.name,
+  imagePath: '/og.jpg',
+  profiles: PROFILE_LINKS.map((l) => l.url),
+});
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <!-- Aplica tema y fondo guardados antes de pintar (M-09). -->
+    <script is:inline set:html={PREFS_BOOT_SCRIPT} />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#5a3fc0" />
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:site_name" content={PERSONA.osName} />
+    <meta property="og:image" content={shareImage} />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${PERSONA.name}: portfolio con forma de sistema operativo`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={shareImage} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <!-- Datos estructurados: un bloque de datos, no de código; la CSP no lo afecta. -->
+    <script is:inline type="application/ld+json" set:html={jsonLdScript(person)} />
+    {jsonLd && <script is:inline type="application/ld+json" set:html={jsonLdScript(jsonLd)} />}
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

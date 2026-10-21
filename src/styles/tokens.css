@@ -1,0 +1,168 @@
+/* Tokens de diseño de Pol OS. Fuente: docs/design-system.md.
+   Ningún componente usa colores literales salvo los fijos del sistema (semáforos, iconos, fondos). */
+
+:root {
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* Terminal: siempre oscura, sea cual sea el tema. Todos los textos pasan 4,5:1 sobre --term-bg. */
+  --term-bg: #17171b;
+  --term-fg: #e6e6ea;
+  --term-accent: #7ee2a8;
+  --term-muted: #9a9aa5;
+  --term-error: #ff8f85;
+  /* Wordle: en su sitio y en otro sitio. Además del color llevan su marca de texto ([A] y (A)). */
+  --term-hit: #7ee2a8;
+  --term-near: #f5d36b;
+  --term-link: #8ab8ff;
+
+  /* Documento (Sobre mí): la hoja es blanca en ambos temas, como un papel; solo cambia el escritorio gris. */
+  --paper-bg: #ffffff;
+  --paper-fg: #1d1d1f;
+  --paper-muted: #55555a;
+  --paper-line: rgba(0, 0, 0, 0.14);
+  --paper-link: #0058d6;
+  --paper-desk: #e3e3e8;
+
+  /* Reparto de lenguajes de un repositorio (Proyectos): siete tonos distinguibles en ambos temas. */
+  --lang-1: #3b82f6;
+  --lang-2: #10b981;
+  --lang-3: #f59e0b;
+  --lang-4: #ef4444;
+  --lang-5: #8b5cf6;
+  --lang-6: #ec4899;
+  --lang-7: #94a3b8;
+
+  --bg: #241f3a;
+  --fg: #1d1d1f;
+  --muted: #636368; /* 5:1 sobre las barras grises (el #6e6e73 original quedaba en 4,3) */
+  --faint: #a1a1a6;
+  --accent: #0a6cff;
+  /* Acento para texto sobre fondos claros: --accent no llega a 4,5:1 sobre las barras grises. */
+  --accent-text: #0058d6;
+  /* Acento para fondos con texto blanco encima (botones, elemento resaltado de un menú): 4,5:1 como mínimo. */
+  --accent-solid: #0a6cff;
+  --accent-fg: #ffffff;
+  --accent-soft: rgba(10, 108, 255, 0.14);
+  /* Colores de categoría del Stack (M-05): fondo y texto con al menos 4,5:1 de contraste. */
+  --cat-1: #3f51d9;
+  --cat-2: #0e7490;
+  --cat-3: #7c3aed;
+  --cat-4: #15803d;
+  --cat-5: #be185d;
+  --cat-6: #b45309;
+  --cat-7: #0369a1;
+  --cat-8: #475569;
+  --cat-fg: #ffffff;
+  --on-wall: #ffffff;
+
+  --glass: rgba(246, 246, 250, 0.55);
+  --glass-strong: rgba(250, 250, 252, 0.78);
+  --glass-border: rgba(255, 255, 255, 0.55);
+  --win-bg: #f7f7f9;
+  --chrome: rgba(236, 236, 241, 0.9);
+  --surface: #ffffff;
+  --field: #ffffff;
+  --line: rgba(0, 0, 0, 0.09);
+  --line-strong: rgba(0, 0, 0, 0.16);
+  --hover: rgba(0, 0, 0, 0.05);
+  --danger: #d0372a;
+  --ok: #1b9446;
+  --wall-dim: 0;
+
+  --shadow-win: 0 0 0 0.5px rgba(0, 0, 0, 0.2), 0 24px 64px -14px rgba(0, 0, 0, 0.45), 0 8px 20px -8px rgba(0, 0, 0, 0.2);
+  --shadow-idle: 0 0 0 0.5px rgba(0, 0, 0, 0.14), 0 12px 32px -12px rgba(0, 0, 0, 0.3);
+  --blur-glass: blur(30px) saturate(1.7);
+
+  --r-win: 12px;
+  --r-control: 7px;
+  --r-menu: 10px;
+  --menubar-h: 32px;
+  /* Multiplica todos los font-size: lo cambia el tamaño de texto elegido en Ajustes (data-text en <html>). */
+  --text-scale: 1;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fg: #f2f2f5;
+    --muted: #a3a3aa;
+    --faint: #6f6f77;
+    --accent: #3b8cff;
+    --accent-text: #5ca0ff;
+    --accent-solid: #2a6fdb;
+    --paper-desk: #2b2b30;
+    --accent-soft: rgba(59, 140, 255, 0.24);
+    --cat-1: #8b9bff;
+    --cat-2: #4dd0e1;
+    --cat-3: #b794f6;
+    --cat-4: #6ee7a0;
+    --cat-5: #f78fb3;
+    --cat-6: #f6b756;
+    --cat-7: #6cb6f0;
+    --cat-8: #a8b3c7;
+    --cat-fg: #0b0d12;
+    --glass: rgba(32, 32, 38, 0.52);
+    --glass-strong: rgba(40, 40, 46, 0.8);
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --win-bg: #232328;
+    --chrome: rgba(46, 46, 52, 0.92);
+    --surface: #2c2c32;
+    --field: #1c1c21;
+    --line: rgba(255, 255, 255, 0.08);
+    --line-strong: rgba(255, 255, 255, 0.16);
+    --hover: rgba(255, 255, 255, 0.06);
+    --danger: #ff6b5e;
+    --ok: #4cd17e;
+    --wall-dim: 0.3;
+    --shadow-win: 0 0 0 0.5px rgba(255, 255, 255, 0.14), 0 24px 64px -14px rgba(0, 0, 0, 0.75), 0 8px 20px -8px rgba(0, 0, 0, 0.5);
+    --shadow-idle: 0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 12px 32px -12px rgba(0, 0, 0, 0.6);
+    color-scheme: dark;
+  }
+}
+
+/* Preferencia guardada por el visitante (Ajustes, M-09): mismos valores que el bloque anterior. */
+:root[data-theme="dark"] {
+  --fg: #f2f2f5;
+  --muted: #a3a3aa;
+  --faint: #6f6f77;
+  --accent: #3b8cff;
+  --accent-text: #5ca0ff;
+  --accent-solid: #2a6fdb;
+  --paper-desk: #2b2b30;
+  --accent-soft: rgba(59, 140, 255, 0.24);
+  --cat-1: #8b9bff;
+  --cat-2: #4dd0e1;
+  --cat-3: #b794f6;
+  --cat-4: #6ee7a0;
+  --cat-5: #f78fb3;
+  --cat-6: #f6b756;
+  --cat-7: #6cb6f0;
+  --cat-8: #a8b3c7;
+  --cat-fg: #0b0d12;
+  --glass: rgba(32, 32, 38, 0.52);
+  --glass-strong: rgba(40, 40, 46, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --win-bg: #232328;
+  --chrome: rgba(46, 46, 52, 0.92);
+  --surface: #2c2c32;
+  --field: #1c1c21;
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.16);
+  --hover: rgba(255, 255, 255, 0.06);
+  --danger: #ff6b5e;
+  --ok: #4cd17e;
+  --wall-dim: 0.3;
+  --shadow-win: 0 0 0 0.5px rgba(255, 255, 255, 0.14), 0 24px 64px -14px rgba(0, 0, 0, 0.75), 0 8px 20px -8px rgba(0, 0, 0, 0.5);
+  --shadow-idle: 0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 12px 32px -12px rgba(0, 0, 0, 0.6);
+  color-scheme: dark;
+}
+
+/* Tamaño del texto (M-09): tres pasos, no libre. */
+:root[data-text='grande'] {
+  --text-scale: 1.1;
+}
+:root[data-text='muy-grande'] {
+  --text-scale: 1.2;
+}

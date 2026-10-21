@@ -1,0 +1,78 @@
+# Actualiza los datos que salen de GitHub y los publica si han cambiado:
+#   - src/content/stack.json        (la ventana Stack, M-05)
+#   - src/content/projects/*.json   (lenguajes, etiquetas y licencia de los proyectos con repositorio público)
+#   - src/content/repos.json        (la ventana GitHub, C-01: los repositorios públicos con el topic `showcase`)
+#
+# Solo se ejecuta por calendario o a mano, nunca por un pull request: tiene permiso de escritura y un secreto.
+# Publica directamente en `main` (la fusión despliega la web), pero antes pasa los tests de
+# contenido: si fallan, no publica nada.
+
+name: Actualizar datos
+
+on:
+  # En la plantilla, solo a mano (Actions → Actualizar datos → Run workflow). Para que corra cada día, cuando ya hayas puesto
+  # tu usuario en src/content/persona.ts, quita el comentario de estas dos líneas:
+  # schedule:
+  #   - cron: '0 6 * * *'
+  workflow_dispatch:
+
+# Solo necesita escribir en el repositorio para hacer el commit con los datos nuevos.
+permissions:
+  contents: write
+
+# Dos ejecuciones a la vez se pisarían al hacer push.
+concurrency:
+  group: actualizar-datos
+  cancel-in-progress: false
+
+jobs:
+  actualizar:
+    name: Stack y proyectos
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # La versión de pnpm sale del campo `packageManager` de package.json.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # STACK_GITHUB_TOKEN es un token de solo lectura tuyo (opcional): permite contar también los repositorios privados.
+      # Si no existe, se usa el token por defecto de Actions y solo se cuentan los públicos.
+      - name: Stack
+        env:
+          STACK_GITHUB_TOKEN: ${{ secrets.STACK_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/actualizar-stack.mjs
+
+      - name: Proyectos
+        env:
+          STACK_GITHUB_TOKEN: ${{ secrets.STACK_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/actualizar-proyectos.mjs
+
+      # Solo lee la lista pública de repositorios: le basta el token de Actions (el tuyo no hace falta y no se le pasa).
+      - name: Repositorios
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/actualizar-repos.mjs
+
+      - name: Tests de contenido
+        run: pnpm test
+
+      - name: Publicar si hay cambios
+        run: |
+          if git diff --quiet -- src/content; then
+            echo "Sin cambios: no hay nada que publicar."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/content/stack.json src/content/projects src/content/repos.json
+          git commit -m "Actualiza los datos del Stack, los proyectos y los repositorios (automático)"
+          git push

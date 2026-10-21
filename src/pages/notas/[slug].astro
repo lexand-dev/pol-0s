@@ -1,0 +1,209 @@
+---
+import { PERSONA } from '../../content/persona';
+import type { GetStaticPaths } from 'astro';
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { externalLinks } from '../../lib/cv';
+import { formatNoteDate, openInOsHref } from '../../lib/notes';
+import { articleJsonLd } from '../../lib/seo';
+
+// La página pública de una nota (S-01): se genera al compilar y se lee sin JavaScript. El texto sale de un archivo del
+// propio repositorio, nunca de un visitante.
+export const prerender = true;
+
+export const getStaticPaths = (async () => (await getCollection('notes')).map((entry) => ({ params: { slug: entry.id }, props: { entry } }))) satisfies GetStaticPaths;
+
+const { entry } = Astro.props;
+const { title, description, date, tags } = entry.data;
+const html = externalLinks(entry.rendered?.html ?? '');
+
+const jsonLd = articleJsonLd({
+  site: Astro.site!,
+  path: Astro.url.pathname,
+  title,
+  description,
+  date,
+  imagePath: '/og.jpg',
+  authorName: PERSONA.name,
+  tags,
+});
+---
+
+<Base title={`${title} · ${PERSONA.name}`} {description} type="article" {jsonLd}>
+  <main class="page">
+    <nav class="top" aria-label="Navegación">
+      <a href="/" data-testid="note-home">{PERSONA.osName}</a>
+      <a class="open" href={openInOsHref(entry.id)} data-testid="note-open-in-os">Abrir en {PERSONA.osName}</a>
+    </nav>
+
+    <article class="sheet" data-testid="note-page">
+      <header>
+        <h1 data-testid="note-title">{title}</h1>
+        <p class="subtitle" data-testid="note-subtitle">{description}</p>
+        <p class="meta">
+          <time datetime={date.toISOString().slice(0, 10)} data-testid="note-date">{formatNoteDate(date)}</time>
+          {tags.length > 0 && <span aria-hidden="true"> · </span>}
+          <span class="tags" data-testid="note-tags">{tags.map((t) => <span class="tag">{t}</span>)}</span>
+        </p>
+      </header>
+
+      <div class="prose" data-testid="note-body" set:html={html} />
+
+      {PERSONA.newsletter && (
+        <aside class="cta" data-testid="note-subscribe">
+          <p>
+            Si te ha servido, suscríbete a <strong>{PERSONA.newsletter.name}</strong>: {PERSONA.newsletter.pitch}.
+          </p>
+          <a class="button" href={PERSONA.newsletter.url} target="_blank" rel="noopener noreferrer">Suscribirme a {PERSONA.newsletter.name}</a>
+        </aside>
+      )}
+    </article>
+  </main>
+</Base>
+
+<style>
+  /* La página de una nota se desplaza: el escritorio de Pol OS, no. */
+  :global(html),
+  :global(body) {
+    height: auto;
+    overflow: auto;
+  }
+  :global(body) {
+    background: var(--paper-desk);
+    font-size: calc(16px * var(--text-scale));
+  }
+  .page {
+    min-height: 100vh;
+    padding: 20px 16px 56px;
+  }
+  .top {
+    display: flex;
+    justify-content: space-between;
+    max-width: 720px;
+    margin: 0 auto 16px;
+    font-size: calc(15px * var(--text-scale));
+  }
+  .top a {
+    color: var(--fg);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .top .open {
+    color: var(--accent-text);
+  }
+  .sheet {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 44px 52px 48px;
+    border-radius: 4px;
+    background: var(--paper-bg);
+    color: var(--paper-fg);
+    box-shadow:
+      0 0 0 0.5px rgba(0, 0, 0, 0.2),
+      0 10px 30px -12px rgba(0, 0, 0, 0.4);
+    line-height: 1.65;
+  }
+  h1 {
+    margin: 0;
+    font-size: calc(30px * var(--text-scale));
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+  }
+  .subtitle {
+    margin: 10px 0 0;
+    font-size: calc(18px * var(--text-scale));
+    line-height: 1.45;
+    color: var(--paper-muted);
+  }
+  .meta {
+    margin: 14px 0 28px;
+    font-size: calc(15px * var(--text-scale));
+    color: var(--paper-muted);
+  }
+  .tag {
+    display: inline-block;
+    margin: 0 4px 4px 0;
+    padding: 1px 9px;
+    border-radius: 99px;
+    background: rgba(0, 0, 0, 0.06);
+  }
+  .prose :global(p) {
+    margin: 0 0 16px;
+  }
+  .prose :global(h2) {
+    margin: 32px 0 10px;
+    font-size: calc(21px * var(--text-scale));
+  }
+  .prose :global(h3) {
+    margin: 26px 0 8px;
+    font-size: calc(17px * var(--text-scale));
+  }
+  .prose :global(ul),
+  .prose :global(ol) {
+    margin: 0 0 16px;
+    padding-left: 24px;
+  }
+  .prose :global(li) {
+    margin: 0 0 8px;
+  }
+  .prose :global(a) {
+    color: var(--paper-link);
+  }
+  .prose :global(blockquote) {
+    margin: 0 0 16px;
+    padding: 2px 0 2px 16px;
+    border-left: 3px solid var(--paper-line);
+    color: var(--paper-muted);
+  }
+  .prose :global(code) {
+    padding: 1px 5px;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.06);
+    font-family: var(--mono);
+    font-size: 0.9em;
+  }
+  .prose :global(pre) {
+    margin: 0 0 16px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.06);
+    font-size: calc(15px * var(--text-scale));
+    line-height: 1.5;
+  }
+  .prose :global(pre code) {
+    padding: 0;
+    background: none;
+  }
+  .prose :global(img) {
+    max-width: 100%;
+    height: auto;
+    border-radius: 6px;
+  }
+  .cta {
+    margin-top: 40px;
+    padding: 20px 22px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.045);
+  }
+  .cta p {
+    margin: 0 0 12px;
+  }
+  .button {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: var(--r-control);
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--accent-fg);
+    background: var(--accent-solid);
+  }
+  @media (max-width: 600px) {
+    .sheet {
+      padding: 28px 22px 32px;
+    }
+    h1 {
+      font-size: calc(25px * var(--text-scale));
+    }
+  }
+</style>

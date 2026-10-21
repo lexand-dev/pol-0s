@@ -1,0 +1,43 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "pol-os-template",
+  // No puede ser posterior a la versión de workerd instalada.
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "@astrojs/cloudflare/entrypoints/server",
+  "observability": { "enabled": true },
+
+  // Remitente del formulario de Correo (M-08). No es secreto. El destino (CONTACT_TO) y la clave
+  // secreta de Turnstile (TURNSTILE_SECRET_KEY) son secretos: `wrangler secret put` en producción y
+  // `.dev.vars` en local. Nunca van aquí.
+  "vars": {
+    "CONTACT_FROM": "contacto@m.example.com",
+    // Dirección pública con la que se construye el enlace de confirmación del Libro de visitas (S-09). Mientras la web se
+    // publique en *.workers.dev, hay que poner aquí esa dirección; si no, el enlace del correo apuntará a un sitio que no existe.
+    "SITE_URL": "https://example.com"
+  },
+
+  // El binding solo puede enviar desde esa dirección, aunque el código se equivocara.
+  "send_email": [{ "name": "EMAIL", "allowed_sender_addresses": ["contacto@m.example.com"] }],
+
+  // 3 envíos por minuto por IP (el periodo solo admite 10 o 60 segundos).
+  "ratelimits": [
+    {
+      "name": "CONTACT_LIMITER",
+      "namespace_id": "1001",
+      "simple": { "limit": 3, "period": 60 }
+    },
+    // Libro de visitas (S-09): 5 peticiones por minuto por IP...
+    {
+      "name": "GUESTBOOK_LIMITER",
+      "namespace_id": "1002",
+      "simple": { "limit": 5, "period": 60 }
+    },
+    // ...y una por minuto por correo de destino (o por enlace de confirmación).
+    {
+      "name": "GUESTBOOK_KEY_LIMITER",
+      "namespace_id": "1003",
+      "simple": { "limit": 1, "period": 60 }
+    }
+  ]
+}

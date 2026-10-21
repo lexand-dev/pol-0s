@@ -1,0 +1,30 @@
+{
+  "kind": "books",
+  "title": "Libros",
+  "items": [
+    {
+      "id": "don-quijote",
+      "title": "Don Quijote de la Mancha",
+      "author": "Miguel de Cervantes",
+      "cover": "/favoritos/libros/don-quijote.jpg"
+    },
+    {
+      "id": "la-regenta",
+      "title": "La Regenta",
+      "author": "Leopoldo Alas «Clarín»",
+      "cover": "/favoritos/libros/la-regenta.jpg"
+    },
+    {
+      "id": "fortunata-y-jacinta",
+      "title": "Fortunata y Jacinta",
+      "author": "Benito Pérez Galdós",
+      "cover": "/favoritos/libros/fortunata-y-jacinta.jpg"
+    },
+    {
+      "id": "platero-y-yo",
+      "title": "Platero y yo",
+      "author": "Juan Ramón Jiménez",
+      "cover": "/favoritos/libros/platero-y-yo.jpg"
+    }
+  ]
+}

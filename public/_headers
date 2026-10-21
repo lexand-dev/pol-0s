@@ -1,0 +1,11 @@
+# Cabeceras de seguridad (M-11). Solo se aplican a archivos estáticos: las respuestas del Worker
+# (/api/contact) las llevan en el propio código. La política de scripts, estilos, imágenes,
+# conexiones y marcos va en la etiqueta <meta> que escribe Astro (security.csp en astro.config.mjs).
+# Aquí va lo que una etiqueta <meta> no puede decir.
+
+/*
+  # Nadie más puede incrustar la web. 'self' le deja mostrar sus propias páginas de demostración.
+  Content-Security-Policy: frame-ancestors 'self'
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()

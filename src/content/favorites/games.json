@@ -1,0 +1,38 @@
+{
+  "kind": "games",
+  "title": "Videojuegos",
+  "credit": {
+    "label": "Shelvid",
+    "url": "https://www.shelvid.com"
+  },
+  "items": [
+    {
+      "id": "celeste",
+      "title": "Celeste",
+      "year": 2018,
+      "cover": "/favoritos/juegos/celeste.jpg",
+      "url": "https://www.shelvid.com/game/celeste"
+    },
+    {
+      "id": "stardew-valley",
+      "title": "Stardew Valley",
+      "year": 2016,
+      "cover": "/favoritos/juegos/stardew-valley.jpg",
+      "url": "https://www.shelvid.com/game/stardew-valley"
+    },
+    {
+      "id": "portal-2",
+      "title": "Portal 2",
+      "year": 2011,
+      "cover": "/favoritos/juegos/portal-2.jpg",
+      "url": "https://www.shelvid.com/game/portal-2"
+    },
+    {
+      "id": "hollow-knight",
+      "title": "Hollow Knight",
+      "year": 2017,
+      "cover": "/favoritos/juegos/hollow-knight.jpg",
+      "url": "https://www.shelvid.com/game/hollow-knight"
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+---
+import { PERSONA } from '../../content/persona';
+import Base from '../../layouts/Base.astro';
+
+// Paso 2 del Libro de visitas (S-09). El enlace del correo trae la petición cifrada en el fragmento de la dirección (`#…`), que el
+// navegador no envía al servidor. Confirmar es un botón, no abrir el enlace: muchos programas de correo abren los enlaces por su
+// cuenta para analizarlos y confirmarían solos.
+export const prerender = true;
+---
+
+<Base title={`Confirma tu reseña · ${PERSONA.osName}`} description={`Confirma tu correo para que ${PERSONA.firstName} revise tu reseña del libro de visitas.`} noindex>
+  <main class="page" data-testid="confirm-page">
+    <section class="card">
+      <h1>Confirma tu correo</h1>
+
+      <div data-state="ready" hidden data-testid="confirm-ready">
+        <p>Pulsa el botón para confirmar que este correo es tuyo y que quieres que {PERSONA.firstName} revise tu petición en el libro de visitas. Tu correo no se publica.</p>
+        <button type="button" class="button" id="confirm-button" data-testid="confirm-button">Confirmar</button>
+      </div>
+
+      <p data-state="invalid" hidden role="alert" data-testid="confirm-invalid">
+        Este enlace no es válido. Abre el que te llegó por correo, completo, o vuelve al libro de visitas y envía tu reseña de nuevo.
+      </p>
+      <p data-state="expired" hidden role="alert" data-testid="confirm-expired">
+        Este enlace ha caducado (duran 48 horas). Vuelve al libro de visitas y envía tu reseña de nuevo.
+      </p>
+      <p data-state="done" hidden role="status" data-testid="confirm-done">
+        Listo. {PERSONA.firstName} revisará tu petición y, si todo está bien, la publicará. No tienes que hacer nada más.
+      </p>
+      <p data-state="repeated" hidden role="status" data-testid="confirm-repeated">
+        Ya habías confirmado hace un momento: {PERSONA.firstName} ya lo tiene.
+      </p>
+      <p data-state="error" hidden role="alert" data-testid="confirm-error">
+        No se ha podido confirmar. Inténtalo de nuevo en unos minutos.
+      </p>
+
+      <p class="back"><a href="/" data-testid="confirm-home">Ir a {PERSONA.osName}</a></p>
+    </section>
+  </main>
+</Base>
+
+<script>
+  // El texto cifrado va en el fragmento: nunca se escribe en los registros del servidor.
+  const token = location.hash.slice(1);
+  const panels = Object.fromEntries([...document.querySelectorAll<HTMLElement>('[data-state]')].map((el) => [el.dataset.state!, el]));
+  const show = (state: string) => {
+    for (const [name, el] of Object.entries(panels)) el.hidden = name !== state;
+  };
+
+  show(/^[A-Za-z0-9_-]{20,4096}$/.test(token) ? 'ready' : 'invalid');
+
+  const button = document.getElementById('confirm-button') as HTMLButtonElement;
+  button.addEventListener('click', async () => {
+    button.disabled = true;
+    try {
+      const res = await fetch('/api/guestbook/confirm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token }),
+      });
+      if (res.ok) return show('done');
+      if (res.status === 410) return show('expired');
+      if (res.status === 422) return show('invalid');
+      if (res.status === 429) return show('repeated');
+      show('error');
+    } catch {
+      show('error');
+    }
+    button.disabled = false;
+  });
+</script>
+
+<style>
+  :global(html),
+  :global(body) {
+    height: auto;
+    overflow: auto;
+  }
+  :global(body) {
+    background: var(--paper-desk);
+    font-size: calc(16px * var(--text-scale));
+  }
+  .page {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 24px 16px;
+  }
+  .card {
+    max-width: 440px;
+    padding: 32px 36px;
+    border-radius: 12px;
+    background: var(--paper-bg);
+    color: var(--paper-fg);
+    box-shadow:
+      0 0 0 0.5px rgba(0, 0, 0, 0.2),
+      0 10px 30px -12px rgba(0, 0, 0, 0.4);
+    line-height: 1.55;
+  }
+  h1 {
+    margin: 0 0 12px;
+    font-size: calc(22px * var(--text-scale));
+  }
+  p {
+    margin: 0 0 14px;
+  }
+  .button {
+    height: 36px;
+    padding: 0 18px;
+    border-radius: var(--r-control);
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--accent-fg);
+    background: var(--accent-solid);
+  }
+  .button:disabled {
+    opacity: 0.5;
+    cursor: wait;
+  }
+  .back {
+    margin: 18px 0 0;
+    font-size: calc(14px * var(--text-scale));
+  }
+  .back a {
+    color: var(--paper-link);
+  }
+  [hidden] {
+    display: none;
+  }
+</style>

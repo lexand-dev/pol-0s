@@ -1,0 +1,17 @@
+# Configuración del servidor para probar el formulario de Correo EN LOCAL.
+# Copia este archivo como .dev.vars (no se commitea): `cp .dev.vars.example .dev.vars`
+#
+# Son valores de PRUEBA, no los reales:
+# - La clave secreta es la que publica Cloudflare para pruebas: da por buena cualquier verificación.
+#   Con ella el widget de desarrollo (también de prueba) funciona en localhost.
+# - El destino es ficticio: en local el correo lo simula Wrangler y no sale de tu máquina.
+#
+# Ojo: si existe .dev.vars, Wrangler deja de leer los archivos .env para el servidor. Las claves
+# reales de producción no van aquí: van en Cloudflare (`wrangler secret put`).
+TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+CONTACT_TO=destino-de-prueba@example.test
+
+# Libro de visitas (S-09). Valores de PRUEBA: la clave cifra los enlaces de confirmación (en producción, una aleatoria con
+# `wrangler secret put GUESTBOOK_SECRET`) y SITE_URL es la dirección con la que se construyen esos enlaces (en local, la de `pnpm dev`).
+GUESTBOOK_SECRET=clave-de-prueba-solo-para-local-0123456789abcdef
+SITE_URL=http://localhost:4321

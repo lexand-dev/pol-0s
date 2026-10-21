@@ -1,0 +1,63 @@
+---
+import { PERSONA } from '../content/persona';
+import Base from '../layouts/Base.astro';
+
+// La página que se ve en cualquier dirección que no existe (por ejemplo, una nota que no está). Estática, sin JavaScript.
+export const prerender = true;
+---
+
+<Base title={`Página no encontrada · ${PERSONA.osName}`} description={`Esta dirección no existe en ${PERSONA.osName}. Vuelve al escritorio.`}>
+  <main class="notfound" data-testid="not-found">
+    <p class="code">404</p>
+    <h1>Esta página no existe</h1>
+    <p>La dirección que has abierto no está en {PERSONA.osName}. Quizá la nota se ha movido o la escribiste mal.</p>
+    <p class="links"><a href="/" data-testid="not-found-home">Ir al escritorio</a></p>
+  </main>
+</Base>
+
+<style>
+  :global(html),
+  :global(body) {
+    height: auto;
+    overflow: auto;
+  }
+  .notfound {
+    min-height: 100vh;
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    gap: 6px;
+    padding: 32px 24px;
+    text-align: center;
+  }
+  .code {
+    margin: 0;
+    font-size: calc(72px * var(--text-scale));
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: var(--accent-text);
+  }
+  h1 {
+    margin: 4px 0 0;
+    font-size: calc(24px * var(--text-scale));
+  }
+  p {
+    margin: 0;
+    max-width: 44ch;
+    line-height: 1.5;
+    font-size: calc(15px * var(--text-scale));
+  }
+  .links {
+    margin-top: 14px;
+  }
+  .links a {
+    display: inline-block;
+    padding: 8px 18px;
+    border-radius: var(--r-control);
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--accent-fg);
+    background: var(--accent-solid);
+  }
+</style>

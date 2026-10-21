@@ -1,0 +1,87 @@
+---
+import { PERSONA } from '../content/persona';
+import { getImage } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import OS from '../os/OS.svelte';
+import type { AboutData, NoteData, ProjectData } from '../os/items';
+import { compiledContent, frontmatter as aboutFront } from '../content/sobre-mi.md';
+import { externalLinks, pdfHref } from '../lib/cv';
+import { noteHref, sortNotes } from '../lib/notes';
+import fotoPersona from '../assets/foto.webp';
+import { LINKS } from '../content/links';
+
+const projects: ProjectData[] = (await getCollection('projects'))
+  .sort((a, b) => a.data.order - b.data.order)
+  .map(({ id, data }) => ({
+    id,
+    name: data.name,
+    domain: data.domain,
+    description: data.description,
+    summary: data.summary,
+    details: data.details,
+    stack: data.stack,
+    screenshots: data.screenshots,
+    repo: data.repo,
+    github: data.github,
+    colors: data.colors,
+    icon: data.icon,
+    url: data.url,
+    embeddable: data.embeddable,
+    placement: data.placement,
+    howto: data.howto,
+    example: data.example,
+  }));
+
+const notes: NoteData[] = sortNotes(
+  (await getCollection('notes')).map(({ id, data }) => ({
+    id,
+    title: data.title,
+    description: data.description,
+    date: data.date,
+    order: data.order,
+    tags: data.tags,
+  })),
+).map(({ id, title, description, date, tags }) => ({ id, title, description, date: date.toISOString(), tags }));
+
+// La foto de la pantalla de acceso se muestra a 92px: se sirve a 276px (hasta 3x de densidad).
+const photo = await getImage({ src: fotoPersona, width: 276, height: 276, format: 'webp', quality: 80 });
+const avatar = { src: photo.src, width: 276, height: 276 };
+
+// Sobre mí (M-06): el texto sale de src/content/sobre-mi.md. El PDF solo se ofrece si está en public/.
+const about: AboutData = {
+  html: externalLinks(await compiledContent()),
+  tagline: aboutFront.tagline,
+  hook: aboutFront.hook,
+  photo: avatar,
+  pdf: pdfHref(__CV_PDF_EXISTS__),
+};
+
+// El título cabe en los 60 caracteres que Google suele enseñar; la línea de Pol es lo que le diferencia.
+const title = `${PERSONA.name} · ${PERSONA.tagline}`;
+const description =
+  'Mi portfolio en forma de sistema operativo, dentro del navegador. Abre mis proyectos, lee mis notas y escríbeme desde su correo.';
+---
+
+<Base {title} {description}>
+  <!-- Texto para buscadores y lectores de pantalla; el escritorio es la isla de Svelte. -->
+  <main>
+    <p class="sr-only">{description}</p>
+    <OS client:load {projects} {notes} {avatar} {about} />
+    <!-- Sin JavaScript solo se ve la pantalla de acceso: estos enlaces son la salida (y lo que lee un rastreador). -->
+    <noscript>
+      <nav class="noscript-links" aria-label={`Enlaces de ${PERSONA.name}`}>
+        <p>{PERSONA.osName} necesita JavaScript. Mientras tanto, puedes encontrar a {PERSONA.firstName} aquí:</p>
+        <ul>
+          {LINKS.map((l) => <li><a href={l.url} rel="noopener noreferrer">{l.label}</a></li>)}
+        </ul>
+      </nav>
+      <nav class="noscript-links" aria-label="Notas">
+        <p>Y estas son sus notas:</p>
+        <ul>
+          {notes.map((n) => <li><a href={noteHref(n.id)}>{n.title}</a></li>)}
+        </ul>
+      </nav>
+    </noscript>
+  </main>
+</Base>

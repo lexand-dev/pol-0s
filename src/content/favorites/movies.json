@@ -1,0 +1,46 @@
+{
+  "kind": "movies",
+  "title": "Películas y series",
+  "items": [
+    {
+      "id": "big-buck-bunny",
+      "title": "Big Buck Bunny",
+      "year": 2008,
+      "synopsis": "Un conejo gigante y pacífico decide dar una lección a tres roedores que no paran de fastidiar. Película abierta de Blender.",
+      "cover": "/favoritos/peliculas/big-buck-bunny.jpg",
+      "trailer": "aqz-KE-bpKQ"
+    },
+    {
+      "id": "sintel",
+      "title": "Sintel",
+      "year": 2010,
+      "synopsis": "Una joven recorre un mundo hostil en busca del pequeño dragón al que cuidó. Película abierta de Blender.",
+      "cover": "/favoritos/peliculas/sintel.jpg",
+      "trailer": "eRsGyueVLvQ"
+    },
+    {
+      "id": "tears-of-steel",
+      "title": "Tears of Steel",
+      "year": 2012,
+      "synopsis": "Un grupo de científicos intenta salvar el mundo de unos robots recreando un momento del pasado. Película abierta de Blender.",
+      "cover": "/favoritos/peliculas/tears-of-steel.jpg",
+      "trailer": "R6MlUcmOul8"
+    },
+    {
+      "id": "spring",
+      "title": "Spring",
+      "year": 2019,
+      "synopsis": "Una pastora y su perro se enfrentan a los espíritus antiguos para que vuelva la primavera. Película abierta de Blender.",
+      "cover": "/favoritos/peliculas/spring.jpg",
+      "trailer": "WhWc3b3KhnY"
+    },
+    {
+      "id": "charge",
+      "title": "Charge",
+      "year": 2022,
+      "synopsis": "En un futuro sin energía, una anciana defiende su reserva de un robot cazador. Película abierta de Blender.",
+      "cover": "/favoritos/peliculas/charge.jpg",
+      "trailer": "UXqq0ZvbOnk"
+    }
+  ]
+}

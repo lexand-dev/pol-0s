@@ -1,0 +1,6 @@
+# Pol OS: se indexa todo salvo la API.
+User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://example.com/sitemap.xml

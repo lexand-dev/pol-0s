@@ -1,0 +1,272 @@
+/* Damas (C-06). Este archivo no lo carga la home: la ventana lo enlaza al abrirse (`?url` + <svelte:head>), así no cuenta en el
+   presupuesto de CSS de la home ni suma una petición. Los colores del tablero y de las fichas son de las damas, iguales en los dos
+   temas salvo un tono más suave en oscuro. */
+.checkers {
+  --ck-light: #e7e2d8;
+  --ck-dark: #1c1c20;
+  --ck-frame: #7a4f2e;
+  --ck-rim: #9a6a42;
+  --ck-side-l: #5a3920;
+  --ck-side-r: #462c18;
+  --ck-shadow: rgba(0, 0, 0, 0.35);
+  --ck-w: #fbfaf7;
+  --ck-w-hi: #ffffff;
+  --ck-w-side: #cfcac0;
+  --ck-r: #c8352b;
+  --ck-r-hi: #e2564a;
+  --ck-r-side: #861d16;
+  --ck-last: rgba(255, 196, 0, 0.45);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--win-bg);
+  color: var(--fg);
+  font-size: calc(13px * var(--text-scale));
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .checkers {
+    --ck-light: #c9c3b6;
+    --ck-dark: #151518;
+  }
+}
+:root[data-theme="dark"] .checkers {
+  --ck-light: #c9c3b6;
+  --ck-dark: #151518;
+}
+.checkers-bar,
+.checkers-foot,
+.checkers-view {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+}
+.checkers-bar {
+  border-bottom: 1px solid var(--line);
+}
+.checkers-view {
+  padding-block: 4px;
+  font-size: calc(12px * var(--text-scale));
+  color: var(--muted);
+}
+.checkers-turn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+.checkers-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--line-strong);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+}
+.checkers-dot.w {
+  background: var(--ck-w);
+}
+.checkers-dot.r {
+  background: var(--ck-r);
+}
+.checkers-count {
+  display: flex;
+  gap: 12px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.checkers-seg {
+  display: inline-flex;
+  padding: 2px;
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.checkers-seg button {
+  min-width: 32px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--fg);
+}
+.checkers-seg button[aria-pressed="true"] {
+  color: var(--accent-fg);
+  background: var(--accent-solid);
+}
+.checkers-stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  padding: 6px 10px 0;
+}
+.checkers-board {
+  display: block;
+  width: 100%;
+  max-height: 100%;
+  touch-action: none;
+  user-select: none;
+}
+.checkers-board.iso {
+  cursor: grab;
+}
+.checkers.dragging .checkers-board.iso {
+  cursor: grabbing;
+}
+.checkers-board.top {
+  max-width: 400px;
+}
+.checkers-cell.light {
+  fill: var(--ck-light);
+}
+.checkers-cell.dark {
+  fill: var(--ck-dark);
+  cursor: pointer;
+}
+.checkers-cell.dark.last {
+  fill: color-mix(in srgb, var(--ck-dark), #ffc400 38%);
+}
+.checkers-cell:focus {
+  outline: none;
+}
+.checkers-cell:focus-visible {
+  stroke: var(--accent);
+  stroke-width: 3;
+}
+.checkers-shadow {
+  fill: var(--ck-shadow);
+}
+.checkers-side-l {
+  fill: var(--ck-side-l);
+}
+.checkers-side-r {
+  fill: var(--ck-side-r);
+}
+.checkers-frame {
+  fill: var(--ck-frame);
+  stroke: var(--ck-rim);
+  stroke-width: 1.5;
+}
+.checkers-target {
+  fill: var(--accent);
+  pointer-events: none;
+}
+.checkers-pieces,
+.checkers-piece-top {
+  pointer-events: none;
+}
+.checkers-piece .side,
+.checkers-piece-top .side {
+  fill: var(--ck-w-side);
+}
+.checkers-piece.r .side,
+.checkers-piece-top.r .side {
+  fill: var(--ck-r-side);
+}
+.checkers-piece .inner,
+.checkers-piece-top .inner {
+  fill: none;
+  stroke: var(--ck-w-side);
+  stroke-width: 1.2;
+  opacity: 0.7;
+}
+.checkers-piece.r .inner,
+.checkers-piece-top.r .inner {
+  stroke: var(--ck-r-side);
+}
+.checkers-piece-top .face {
+  fill: var(--ck-w);
+}
+.checkers-piece-top.r .face {
+  fill: var(--ck-r);
+}
+.checkers-piece-top .crown {
+  fill: var(--accent);
+}
+.checkers-piece-shadow {
+  fill: rgba(0, 0, 0, 0.3);
+}
+.checkers .ck-w {
+  stop-color: var(--ck-w);
+}
+.checkers .ck-w-hi {
+  stop-color: var(--ck-w-hi);
+}
+.checkers .ck-r {
+  stop-color: var(--ck-r);
+}
+.checkers .ck-r-hi {
+  stop-color: var(--ck-r-hi);
+}
+.checkers-ring {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 3;
+}
+.checkers-ring.must {
+  stroke: var(--danger);
+  stroke-width: 2.5;
+  stroke-dasharray: 5 4;
+}
+.checkers-hint {
+  color: var(--muted);
+  min-width: 0;
+}
+.checkers-hint.warn {
+  color: var(--danger);
+  font-weight: 600;
+}
+.checkers-actions {
+  display: flex;
+  gap: 8px;
+}
+.checkers-btn {
+  padding: 7px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--fg);
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.checkers-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.checkers-btn.primary {
+  color: var(--accent-fg);
+  background: var(--accent-solid);
+  box-shadow: none;
+}
+.checkers-btn:focus-visible,
+.checkers-seg button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.checkers-end {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  z-index: 2;
+  transform: translateX(-50%);
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 14px 20px;
+  border-radius: 12px;
+  text-align: center;
+  color: var(--muted);
+  background: var(--surface);
+  box-shadow: var(--shadow-win);
+}
+.checkers-end strong {
+  font-size: calc(18px * var(--text-scale));
+  color: var(--fg);
+}
+@media (max-width: 767px) {
+  .checkers-stage {
+    padding: 6px 4px 0;
+    align-items: start;
+  }
+}

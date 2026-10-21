@@ -1,0 +1,14 @@
+{
+  "name": "Álex OS",
+  "short_name": "Álex OS",
+  "description": "Mi portfolio en forma de sistema operativo, dentro del navegador.",
+  "lang": "es",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#241f3a",
+  "theme_color": "#5a3fc0",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
